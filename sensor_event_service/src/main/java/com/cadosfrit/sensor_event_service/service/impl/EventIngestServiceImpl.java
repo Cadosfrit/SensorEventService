@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Instant;
 import java.util.*;
 
 @Service
@@ -75,8 +76,32 @@ public class EventIngestServiceImpl implements EventIngestService {
         }
 
         try {
-            String json = objectMapper.writeValueAsString(validEvents);
-            Map<String, Integer> counts = repository.processBatchInDB(json);
+            List<Map<String, Object>> dbRows = new ArrayList<>();
+            for (EventRequestDTO event : validEvents) {
+                Map<String, Object> row = new HashMap<>();
+
+                row.put("event_id", event.getEventId());
+                row.put("machine_id", event.getMachineId());
+
+                row.put("event_time", event.getEventTime());
+                row.put("received_time", Instant.now());
+
+                row.put("defect_count", event.getDefectCount());
+                row.put("duration_ms", event.getDurationMs());
+
+                dbRows.add(row);
+            }
+
+            String json = objectMapper.writeValueAsString(dbRows);
+
+            List<Map<String, Object>> resultRows = repository.processBatchInDB(json);
+
+            Map<String, Integer> counts = new HashMap<>();
+            for (Map<String, Object> row : resultRows) {
+                String status = (String) row.get("status");
+                Number count = (Number) row.get("count");
+                counts.put(status, count != null ? count.intValue() : 0);
+            }
 
             int accepted = counts.getOrDefault(Constants.ACCEPTED.getCode(), 0);
             int updated = counts.getOrDefault(Constants.UPDATED.getCode(), 0);
@@ -86,6 +111,8 @@ public class EventIngestServiceImpl implements EventIngestService {
 
         } catch (JsonProcessingException e) {
             throw new RuntimeException("Error serializing event batch for database persistence", e);
+        } catch (Exception e) {
+            throw new RuntimeException("Database error during event batch persistence", e);
         }
     }
 

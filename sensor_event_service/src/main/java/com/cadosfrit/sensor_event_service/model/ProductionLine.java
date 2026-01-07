@@ -10,9 +10,6 @@ public class ProductionLine {
     @Id
     private String id;
 
-    private String name;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "factory_id")
-    private Factory factory;
+    @Column(name = "factory_id", nullable = false)
+    private String factoryId;
 }

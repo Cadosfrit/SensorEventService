@@ -10,13 +10,14 @@ import org.springframework.stereotype.Repository;
 import com.cadosfrit.sensor_event_service.model.MachineEvent;
 
 import java.time.Instant;
+import java.util.List;
 import java.util.Map;
 
 @Repository
 public interface MachineEventRepository extends JpaRepository<MachineEvent, String> {
 
-    @Procedure(procedureName = "ProcessEventBatch")
-    Map<String, Integer> processBatchInDB(@Param("event_json") String eventJson);
+    @Query(value = "CALL process_event_batch(:jsonBatch)", nativeQuery = true)
+    List<Map<String, Object>> processBatchInDB(@Param("jsonBatch") String jsonBatch);
 
     /**
      * Windowed Stats Query

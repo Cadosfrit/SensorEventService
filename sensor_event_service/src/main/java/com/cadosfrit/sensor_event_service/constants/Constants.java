@@ -10,12 +10,15 @@ public enum Constants {
     FUTURE_EVENT_TIME("FUTURE_EVENT_TIME"),
 
     // Ingest Status Codes
-    ACCEPTED("accepted"),
-    UPDATED("updated"),
-    DEDUPED("deduped"),
+    ACCEPTED("ACCEPTED"),
+    UPDATED("UPDATED"),
+    DEDUPED("DEDUPED"),
 
     WARNING("Warning"),
-    HEALTHY("Healthy");
+    HEALTHY("Healthy"),
+
+    STATUS("status"),
+    COUNT("count");
 
     private final String code;
 

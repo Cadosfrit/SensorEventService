@@ -9,6 +9,6 @@ public class EventRequestDTO {
     private String machineId;
     private Instant eventTime;
     private Instant receivedTime;
-    private Long durationMs;
-    private Integer defectCount;
+    private long durationMs;
+    private int defectCount;
 }
