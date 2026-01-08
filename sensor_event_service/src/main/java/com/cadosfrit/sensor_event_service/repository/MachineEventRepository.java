@@ -3,7 +3,6 @@ package com.cadosfrit.sensor_event_service.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.jpa.repository.query.Procedure;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
@@ -18,6 +17,12 @@ public interface MachineEventRepository extends JpaRepository<MachineEvent, Stri
 
     @Query(value = "CALL process_event_batch(:jsonBatch)", nativeQuery = true)
     List<Map<String, Object>> processBatchInDB(@Param("jsonBatch") String jsonBatch);
+
+    @Query(value = "CALL process_event_batch(:jsonBatch)", nativeQuery = true)
+    List<Map<String, Object>> processFastBatchSP(@Param("jsonBatch") String jsonBatch);
+
+    @Query(value = "CALL process_batch_sequential(:jsonBatch)", nativeQuery = true)
+    List<Map<String, Object>> processSlowBatchSP(@Param("jsonBatch") String jsonBatch);
 
     /**
      * Windowed Stats Query

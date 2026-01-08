@@ -15,7 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.Instant;
 import java.util.*;
 
-@Service
+@Service("EventIngestServiceV1")
 @RequiredArgsConstructor
 public class EventIngestServiceImpl implements EventIngestService {
 
@@ -26,33 +26,46 @@ public class EventIngestServiceImpl implements EventIngestService {
     @Override
     @Transactional
     public IngestResponseDTO processBatch(List<EventRequestDTO> batch) {
-        BatchDedupResult dedupResult = deduplicateInBatch(batch);
+        BatchPreProcessResult preProcessResult = preprocessBatch(batch);
 
-        ValidationResult validationResult = validateEvents(dedupResult.uniqueEvents);
+        ValidationResult validationResult = validateEvents(preProcessResult.sanitizedList);
 
-        DbPersistResult dbResult = persistBatch(validationResult.validEvents);
+        DbPersistResult dbResult = persistBatch(validationResult.validEvents,
+                preProcessResult.intraUpdates,
+                preProcessResult.intraDedups);
 
         return IngestResponseDTO.builder()
                 .accepted(dbResult.accepted)
                 .updated(dbResult.updated)
-                .deduped(dedupResult.duplicateCount + dbResult.dbDeduped)
+                .deduped(dbResult.dbDeduped)
                 .rejected(validationResult.rejections.size())
                 .rejections(validationResult.rejections)
                 .build();
     }
 
-    private BatchDedupResult deduplicateInBatch(List<EventRequestDTO> batch) {
+    private BatchPreProcessResult preprocessBatch(List<EventRequestDTO> batch) {
         Map<String, EventRequestDTO> uniqueMap = new LinkedHashMap<>();
-        int duplicates = 0;
+        int intraUpdates = 0;
+        int intraDedups = 0;
 
-        for (EventRequestDTO event : batch) {
-            if (uniqueMap.containsKey(event.getEventId())) {
-                duplicates++;
+        for (EventRequestDTO current : batch) {
+            String id = current.getEventId();
+
+            if (uniqueMap.containsKey(id)) {
+                EventRequestDTO previous = uniqueMap.get(id);
+
+                if (isSameData(previous, current)) {
+                    intraDedups++;
+                } else {
+                    intraUpdates++;
+                }
+                uniqueMap.put(id, current);
             } else {
-                uniqueMap.put(event.getEventId(), event);
+                uniqueMap.put(id, current);
             }
         }
-        return new BatchDedupResult(new ArrayList<>(uniqueMap.values()), duplicates);
+
+        return new BatchPreProcessResult(new ArrayList<>(uniqueMap.values()), intraUpdates, intraDedups);
     }
 
     private ValidationResult validateEvents(List<EventRequestDTO> uniqueEvents) {
@@ -70,7 +83,7 @@ public class EventIngestServiceImpl implements EventIngestService {
         return new ValidationResult(validEvents, rejections);
     }
 
-    private DbPersistResult persistBatch(List<EventRequestDTO> validEvents) {
+    private DbPersistResult persistBatch(List<EventRequestDTO> validEvents,int intraUpdates, int intraDedups) {
         if (validEvents.isEmpty()) {
             return new DbPersistResult(0, 0, 0);
         }
@@ -106,6 +119,8 @@ public class EventIngestServiceImpl implements EventIngestService {
             int accepted = counts.getOrDefault(Constants.ACCEPTED.getCode(), 0);
             int updated = counts.getOrDefault(Constants.UPDATED.getCode(), 0);
             int deduped = counts.getOrDefault(Constants.DEDUPED.getCode(), 0);
+            updated+= intraUpdates;
+            deduped+= intraDedups;
 
             return new DbPersistResult(accepted, updated, deduped);
 
@@ -116,6 +131,13 @@ public class EventIngestServiceImpl implements EventIngestService {
         }
     }
 
+    private boolean isSameData(EventRequestDTO oldEvt, EventRequestDTO newEvt) {
+        return Objects.equals(oldEvt.getMachineId(), newEvt.getMachineId()) &&
+                Objects.equals(oldEvt.getEventTime(), newEvt.getEventTime()) &&
+                Objects.equals(oldEvt.getDurationMs(), newEvt.getDurationMs()) &&
+                Objects.equals(oldEvt.getDefectCount(), newEvt.getDefectCount());
+    }
+
     private Optional<String> runValidations(EventRequestDTO event) {
         return validationStrategies.stream()
                 .map(s -> s.validate(event))
@@ -124,7 +146,7 @@ public class EventIngestServiceImpl implements EventIngestService {
                 .findFirst();
     }
 
-    private record BatchDedupResult(List<EventRequestDTO> uniqueEvents, int duplicateCount) {}
+    private record BatchPreProcessResult(List<EventRequestDTO> sanitizedList, int intraUpdates, int intraDedups) {}
 
     private record ValidationResult(List<EventRequestDTO> validEvents, List<IngestResponseDTO.Rejection> rejections) {}
 

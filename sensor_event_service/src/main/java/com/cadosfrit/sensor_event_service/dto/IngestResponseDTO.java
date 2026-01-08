@@ -8,7 +8,6 @@ import java.util.List;
 @Data
 @Builder
 public class IngestResponseDTO {
-    private String status;
     private int accepted;
     private int deduped;
     private int updated;
