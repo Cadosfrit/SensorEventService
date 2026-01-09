@@ -30,7 +30,6 @@ public class EventIngestController {
     @PostMapping("/batch")
     public ResponseEntity<?> ingestBatch(@RequestBody List<EventRequestDTO> batch) {
         try {
-            // Preventive checks
             if (batch == null || batch.isEmpty()) {
                 log.warn("Invalid request: batch is null or empty");
                 return ResponseEntity.badRequest().body("Batch cannot be empty");
@@ -41,7 +40,6 @@ public class EventIngestController {
                 return ResponseEntity.badRequest().body("Batch size cannot exceed 10000 events");
             }
 
-            // Validate each event has required fields
             for (int i = 0; i < batch.size(); i++) {
                 EventRequestDTO event = batch.get(i);
                 if (event == null) {
@@ -82,7 +80,6 @@ public class EventIngestController {
     @PostMapping("/v2/batch")
     public ResponseEntity<?> ingestBatchV2(@RequestBody List<EventRequestDTO> batch) {
         try {
-            // Preventive checks
             if (batch == null || batch.isEmpty()) {
                 log.warn("Invalid request: v2 batch is null or empty");
                 return ResponseEntity.badRequest().body("Batch cannot be empty");
@@ -93,7 +90,6 @@ public class EventIngestController {
                 return ResponseEntity.badRequest().body("Batch size cannot exceed 10000 events");
             }
 
-            // Validate each event has required fields
             for (int i = 0; i < batch.size(); i++) {
                 EventRequestDTO event = batch.get(i);
                 if (event == null) {

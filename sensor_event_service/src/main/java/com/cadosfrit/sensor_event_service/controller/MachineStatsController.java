@@ -28,7 +28,6 @@ public class MachineStatsController {
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) Instant end) {
 
         try {
-            // Preventive checks
             if (machineId == null || machineId.trim().isEmpty()) {
                 log.warn("Invalid request: machineId is null or empty");
                 return ResponseEntity.badRequest().body("Machine ID is required");
@@ -69,7 +68,6 @@ public class MachineStatsController {
             @RequestParam(defaultValue = "10") int limit) {
 
         try {
-            // Preventive checks
             if (factoryId == null || factoryId.trim().isEmpty()) {
                 log.warn("Invalid request: factoryId is null or empty");
                 return ResponseEntity.badRequest().body("Factory ID is required");

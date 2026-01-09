@@ -18,7 +18,6 @@ public class DurationValidationStrategy implements EventValidationStrategy {
     @Override
     public Optional<String> validate(EventRequestDTO event) {
         try {
-            // Null check for event
             if (event == null) {
                 logger.warn("DurationValidationStrategy: Event object is null");
                 return Optional.of(Constants.INVALID_DURATION.getCode());
@@ -26,7 +25,6 @@ public class DurationValidationStrategy implements EventValidationStrategy {
 
             Long duration = event.getDurationMs();
 
-            // Validate duration
             if (duration == null) {
                 logger.warn("DurationValidationStrategy: Duration is null for eventId: {}",
                     event.getEventId());

@@ -19,7 +19,6 @@ public class FutureTimeValidationStrategy implements EventValidationStrategy {
     @Override
     public Optional<String> validate(EventRequestDTO event) {
         try {
-            // Null check for event
             if (event == null) {
                 logger.warn("FutureTimeValidationStrategy: Event object is null");
                 return Optional.of(Constants.FUTURE_EVENT_TIME.getCode());
@@ -27,7 +26,6 @@ public class FutureTimeValidationStrategy implements EventValidationStrategy {
 
             Instant eventTime = event.getEventTime();
 
-            // Null check for event time
             if (eventTime == null) {
                 logger.warn("FutureTimeValidationStrategy: Event time is null for eventId: {}",
                     event.getEventId());
