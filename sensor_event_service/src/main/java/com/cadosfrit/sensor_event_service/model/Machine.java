@@ -8,7 +8,7 @@ import lombok.Data;
 @Table(name = "machines")
 public class Machine {
     @Id
-    private String id;
+    private String machineId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "line_id")

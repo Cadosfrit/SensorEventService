@@ -17,7 +17,7 @@ public class MachineEvent {
     @Column(name = "event_id")
     private String eventId; 
 
-    @Column(name = "machine_id", nullable = false)
+    @JoinColumn(name="machine_id", nullable = false)
     private String machineId;
 
     @Column(name = "event_time", nullable = false)
