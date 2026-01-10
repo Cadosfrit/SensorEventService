@@ -3,6 +3,7 @@ DROP PROCEDURE IF EXISTS process_event_batch;;
 
 CREATE PROCEDURE process_event_batch(IN jsonBatch JSON)
 BEGIN
+    SET SESSION TRANSACTION ISOLATION LEVEL READ COMMITTED;
     CREATE TEMPORARY TABLE IF NOT EXISTS staging_events (
         event_id VARCHAR(50) PRIMARY KEY,
         machine_id VARCHAR(50),
@@ -64,6 +65,7 @@ BEGIN
         defect_count = VALUES(defect_count);
 
     DROP TEMPORARY TABLE IF EXISTS staging_events;
+    SET SESSION TRANSACTION ISOLATION LEVEL REPEATABLE READ;
 END;;
 
 -- 2. SEQUENTIAL SP: Row-by-row processing using a Cursor
@@ -85,6 +87,7 @@ BEGIN
 
     DECLARE db_machine_id VARCHAR(50);
     DECLARE db_duration_ms BIGINT;
+    DECLARE db_event_time DATETIME(6);
     DECLARE db_defect_count INT;
     DECLARE row_exists INT;
 
@@ -104,7 +107,7 @@ BEGIN
     )) AS jt;
 
     DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = TRUE;
-
+    SET SESSION TRANSACTION ISOLATION LEVEL READ COMMITTED;
     OPEN event_cursor;
 
     read_loop: LOOP
@@ -113,8 +116,8 @@ BEGIN
             LEAVE read_loop;
         END IF;
 
-        SELECT count(*), MAX(machine_id), MAX(duration_ms), MAX(defect_count)
-        INTO row_exists, db_machine_id, db_duration_ms, db_defect_count
+        SELECT count(*), MAX(machine_id), MAX(duration_ms), MAX(defect_count), MAX(event_time)
+        INTO row_exists, db_machine_id, db_duration_ms, db_defect_count, db_event_time
         FROM machine_events
         WHERE event_id = v_event_id;
 
@@ -123,7 +126,7 @@ BEGIN
             VALUES (v_event_id, v_machine_id, v_event_time, v_received_time, v_duration_ms, v_defect_count);
             SET v_accepted = v_accepted + 1;
         ELSE
-            IF (v_machine_id = db_machine_id AND v_duration_ms = db_duration_ms AND v_defect_count = db_defect_count AND v_event_time = event_time) THEN
+            IF (v_machine_id = db_machine_id AND v_duration_ms = db_duration_ms AND v_defect_count = db_defect_count AND v_event_time = db_event_time) THEN
                 SET v_deduped = v_deduped + 1;
             ELSE
                 UPDATE machine_events
@@ -145,4 +148,5 @@ BEGIN
     SELECT 'UPDATED' as status, v_updated as count
     UNION ALL
     SELECT 'DEDUPED' as status, v_deduped as count;
+    SET SESSION TRANSACTION ISOLATION LEVEL REPEATABLE READ;
 END;;
