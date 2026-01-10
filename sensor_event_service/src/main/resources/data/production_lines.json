@@ -1,0 +1,42 @@
+[
+	{
+		"line_id" : "line_1_fac_01",
+		"factory_id" : "factory_01"
+	},
+	{
+		"line_id" : "line_2_fac_01",
+		"factory_id" : "factory_01"
+	},
+	{
+		"line_id" : "line_1_fac_02",
+		"factory_id" : "factory_02"
+	},
+	{
+		"line_id" : "line_2_fac_02",
+		"factory_id" : "factory_02"
+	},
+	{
+		"line_id" : "line_1_fac_03",
+		"factory_id" : "factory_03"
+	},
+	{
+		"line_id" : "line_2_fac_03",
+		"factory_id" : "factory_03"
+	},
+	{
+		"line_id" : "line_1_fac_04",
+		"factory_id" : "factory_04"
+	},
+	{
+		"line_id" : "line_2_fac_04",
+		"factory_id" : "factory_04"
+	},
+	{
+		"line_id" : "line_1_fac_05",
+		"factory_id" : "factory_05"
+	},
+	{
+		"line_id" : "line_2_fac_05",
+		"factory_id" : "factory_05"
+	}
+]

@@ -1,0 +1,122 @@
+[
+	{
+		"machine_id" : "mac_1_L1_F1",
+		"line_id" : "line_1_fac_01"
+	},
+	{
+		"machine_id" : "mac_2_L1_F1",
+		"line_id" : "line_1_fac_01"
+	},
+	{
+		"machine_id" : "mac_3_L1_F1",
+		"line_id" : "line_1_fac_01"
+	},
+	{
+		"machine_id" : "mac_1_L1_F2",
+		"line_id" : "line_1_fac_02"
+	},
+	{
+		"machine_id" : "mac_2_L1_F2",
+		"line_id" : "line_1_fac_02"
+	},
+	{
+		"machine_id" : "mac_3_L1_F2",
+		"line_id" : "line_1_fac_02"
+	},
+	{
+		"machine_id" : "mac_1_L1_F3",
+		"line_id" : "line_1_fac_03"
+	},
+	{
+		"machine_id" : "mac_2_L1_F3",
+		"line_id" : "line_1_fac_03"
+	},
+	{
+		"machine_id" : "mac_3_L1_F3",
+		"line_id" : "line_1_fac_03"
+	},
+	{
+		"machine_id" : "mac_1_L1_F4",
+		"line_id" : "line_1_fac_04"
+	},
+	{
+		"machine_id" : "mac_2_L1_F4",
+		"line_id" : "line_1_fac_04"
+	},
+	{
+		"machine_id" : "mac_3_L1_F4",
+		"line_id" : "line_1_fac_04"
+	},
+	{
+		"machine_id" : "mac_1_L1_F5",
+		"line_id" : "line_1_fac_05"
+	},
+	{
+		"machine_id" : "mac_2_L1_F5",
+		"line_id" : "line_1_fac_05"
+	},
+	{
+		"machine_id" : "mac_3_L1_F5",
+		"line_id" : "line_1_fac_05"
+	},
+	{
+		"machine_id" : "mac_1_L2_F1",
+		"line_id" : "line_2_fac_01"
+	},
+	{
+		"machine_id" : "mac_2_L2_F1",
+		"line_id" : "line_2_fac_01"
+	},
+	{
+		"machine_id" : "mac_3_L2_F1",
+		"line_id" : "line_2_fac_01"
+	},
+	{
+		"machine_id" : "mac_1_L2_F2",
+		"line_id" : "line_2_fac_02"
+	},
+	{
+		"machine_id" : "mac_2_L2_F2",
+		"line_id" : "line_2_fac_02"
+	},
+	{
+		"machine_id" : "mac_3_L2_F2",
+		"line_id" : "line_2_fac_02"
+	},
+	{
+		"machine_id" : "mac_1_L2_F3",
+		"line_id" : "line_2_fac_03"
+	},
+	{
+		"machine_id" : "mac_2_L2_F3",
+		"line_id" : "line_2_fac_03"
+	},
+	{
+		"machine_id" : "mac_3_L2_F3",
+		"line_id" : "line_2_fac_03"
+	},
+	{
+		"machine_id" : "mac_1_L2_F4",
+		"line_id" : "line_2_fac_04"
+	},
+	{
+		"machine_id" : "mac_2_L2_F4",
+		"line_id" : "line_2_fac_04"
+	},
+	{
+		"machine_id" : "mac_3_L2_F4",
+		"line_id" : "line_2_fac_04"
+	},
+	{
+		"machine_id" : "mac_1_L2_F5",
+		"line_id" : "line_2_fac_05"
+	},
+	{
+		"machine_id" : "mac_2_L2_F5",
+		"line_id" : "line_2_fac_05"
+	},
+	{
+		"machine_id" : "mac_3_L2_F5",
+		"line_id" : "line_2_fac_05"
+	}
+]
